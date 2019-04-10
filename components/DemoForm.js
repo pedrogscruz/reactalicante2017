@@ -3,6 +3,8 @@ import { reduxForm, Field } from 'redux-form'
 import showResults from './showResults'
 import isValidEmail from 'sane-email-validation'
 import provinces from '../data/provinces'
+import {createRenderer} from './RenderField'
+import renderInput from './RenderInput'
 
 const validate = values => {
   const errors = {}
@@ -23,28 +25,6 @@ const validate = values => {
   return errors
 }
 
-const createRenderer = render => ({ input, meta, label, ...rest }) =>
-  <div
-    className={[
-      meta.error && meta.touched ? 'error' : '',
-      meta.active ? 'active' : ''
-    ].join(' ')}
-  >
-    <label>
-      {label}
-    </label>
-    {render(input, label, rest)}
-    {meta.error &&
-      meta.touched &&
-      <span>
-        {meta.error}
-      </span>}
-  </div>
-
-const RenderInput = createRenderer((input, label) =>
-  <input {...input} placeholder={label} />
-)
-
 const RenderSelect = createRenderer((input, label, { children }) =>
   <select {...input}>
     {children}
@@ -53,17 +33,17 @@ const RenderSelect = createRenderer((input, label, { children }) =>
 
 let DemoForm = ({ handleSubmit, submitting }) =>
   <form onSubmit={handleSubmit(showResults)}>
-    <Field name="firstName" label="First Name" component={RenderInput} />
-    <Field name="lastName" label="Last Name" component={RenderInput} />
-    <Field name="email" label="Email" component={RenderInput} />
-    <Field name="province" label="Province" component={RenderSelect}>
+    <Field name="firstName" label="First Name" component={renderInput} />
+    <Field name="lastName" label="Last Name" component={renderInput} />
+    <Field name="email" label="Email" component={renderInput} />
+    {/* <Field name="province" label="Province" component={RenderSelect}>
       <option />
       {provinces.map(province =>
         <option key={province} value={province}>
           {province}
         </option>
       )}
-    </Field>
+    </Field> */}
     <button type="submit" disabled={submitting}>
       Submit
     </button>
@@ -74,4 +54,4 @@ DemoForm = reduxForm({
   destroyOnUnmount: false,
   validate
 })(DemoForm)
-export default DemoForm
+export default DemoForm;

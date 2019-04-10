@@ -1,20 +1,15 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import initStore from './redux/initStore'
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
+import reduxThunk from 'redux-thunk';
 
 const page = WrappedComponent => {
   class Page extends Component {
-    static async getInitialProps(context) {
-      const store = initStore()
-      const otherProps = WrappedComponent.getInitialProps
-        ? await WrappedComponent.getInitialProps({ ...context, store })
-        : {}
-      return { ...otherProps, initialState: store.getState() }
-    }
 
     constructor(props) {
       super(props)
-      this.store = initStore(props.initialState)
+      this.store = createStore(combineReducers({form: formReducer}), {}, applyMiddleware(reduxThunk));
     }
     render() {
       const { initialState, ...rest } = this.props
